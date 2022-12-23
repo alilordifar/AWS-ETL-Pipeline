@@ -1,2 +1,2 @@
 # AWS-ETL-Pipeline
-Streaming data in real-time to Amazon S3 using AWS Kinesis and Apache Kafka
+Real-Time records streaming using Confluent Kafka (Producer and Cosnumer), and AWS Kinesis Data Stream as well as record processing using AWS Lambda. 
