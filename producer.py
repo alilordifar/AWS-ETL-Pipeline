@@ -1,6 +1,6 @@
 from confluent_kafka import Producer
-import json
 from data import create_data
+import json
 import time
 
 

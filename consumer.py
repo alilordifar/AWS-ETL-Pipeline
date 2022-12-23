@@ -1,7 +1,8 @@
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import sys
-import boto3
 import json
+import boto3
+
 
 conf = {
     'bootstrap.servers': 'your bootstrap server',
