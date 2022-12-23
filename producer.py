@@ -7,16 +7,16 @@ import time
 if __name__ == '__main__':
 
     conf = {
-        'bootstrap.servers': 'pkc-n00kk.us-east-1.aws.confluent.cloud:9092',
+        'bootstrap.servers': 'your bootstrap server',
         'security.protocol': 'SASL_SSL',
         'sasl.mechanisms': 'PLAIN',
-        'sasl.username': 'KJZAKGCEEXUVNFHV',
-        'sasl.password': '/K5XNN7fTWl7h3lqN79NJA7ox+92g+KfVXAHa+4Gm3WI7Cmky1REPoq1Wb2amjoW',
+        'sasl.username': 'your username',
+        'sasl.password': 'your password'
     }
 
     producer = Producer(conf)
 
-    topic = 'twitter-topic'
+    topic = 'Your Kafka Topic'
 
     def json_serializer(data):
         return json.dumps(data)
@@ -30,6 +30,8 @@ if __name__ == '__main__':
     while True:
         data = create_data()
         print(data)
-        producer.produce(topic, json_serializer(data), callback=acked)
+        producer.produce(topic, key=json_serializer(data['Specify Key']),
+                         value=json_serializer(data), callback=acked)
+
         producer.poll(1)
         time.sleep(5)

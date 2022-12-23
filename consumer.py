@@ -1,21 +1,35 @@
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import sys
+import boto3
+import json
 
 conf = {
-    'bootstrap.servers': 'pkc-n00kk.us-east-1.aws.confluent.cloud:9092',
+    'bootstrap.servers': 'your bootstrap server',
     'security.protocol': 'SASL_SSL',
     'sasl.mechanisms': 'PLAIN',
-    'sasl.username': 'KJZAKGCEEXUVNFHV',
-    'sasl.password': '/K5XNN7fTWl7h3lqN79NJA7ox+92g+KfVXAHa+4Gm3WI7Cmky1REPoq1Wb2amjoW',
-    'group.id': 'test',
-    'auto.offset.reset': 'latest'
+    'sasl.username': 'your username',
+    'sasl.password': 'your password',
+    'group.id': 'your group id',
+    'auto.offset.reset': 'earliest'
 }
 
+# use boto3 client library to connect to the AWS Kinesis Data Stream
+kinesis_client = boto3.client('kinesis',
+                              region_name=AWS Region,
+                              aws_access_key_id=AWS Access Key,
+                              aws_secret_access_key=AWS Secret Access Key
+                              )
+
+
 consumer = Consumer(conf)
-topic = ['twitter-topic']
+topic = ['List of Kafka topics']
 
 
 def record_process(msg):
+    '''
+    This function is going to process
+    messages on the Kafka Consumer Side
+    '''
     print(
         f"Recieved Records: {msg.value().decode('utf-8')}")
 
@@ -36,7 +50,16 @@ def consumer_loop(consumer, topics):
                 elif msg.error():
                     raise KafkaException(msg.error())
             else:
-                record_process(msg)
+                # Uncomment below line  if you do not need to send data to KDS
+                #msg = record_process(msg)
+                # print(msg.value().decode('utf-8'))
+
+                # Publishing records into AWS Kinesis Data Stream
+                put_response = kinesis_client.put_record(
+                    StreamName='demo',
+                    Data=json.dumps(msg.value().decode('utf-8')),
+                    PartitionKey='user_id')
+                print(put_response)
     finally:
         # Close down consumer to commit final offsets.
         consumer.close()
